@@ -1,10 +1,34 @@
-import socket
+import pyfiglet
+import sys
+import socket 
+from datetime import datetime
 
-for port in range(5000, 5004):
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    result = sock.connect_ex(("192.168.0.250", port))
+ascii_banner = pyfiglet.figlet_format("PORT SCANNER")
+print(ascii_banner)
 
-    if result == 0:
-        print("Port " + str(port) + " is open")
-    else:
-        print("Port " + str(port) + " is closed")
+target = input(str("Target IP: "))
+
+#Banner Information
+print("_" * 50)
+print("Scanning Target: " + target)
+print("Scanning started at: " + str(datetime.now()))
+print("_" * 50)
+
+try:
+
+    for port in range(1,65535):
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        socket.setdefaulttimeout(0.5)
+
+        result = s.connect_ex((target,port))
+        if result ==0:
+            print("[*] Port {} is open". format(port))
+        s.close()
+
+except KeyboardInterrupt:
+    print("\n Exiting :(")
+    sys.exit()
+
+except socket.error:
+    print("\ Host not responding >:(")
+    sys.exit()
